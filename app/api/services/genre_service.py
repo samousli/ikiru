@@ -1,5 +1,5 @@
-from app import IkiruJsonResponse
 from app.models import Genre
+from app.common.responses import IkiruJsonResponse
 
 
 def get_genres():

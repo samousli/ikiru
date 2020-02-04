@@ -18,7 +18,7 @@ and the intent to create an structure which can potentially support a large code
 * GET /api/v1/users/[user_uuid]/rentals
 * POST /api/v1/rentals
 * POST /api/v1/returns
-* POST /auth/evalR
+* POST /auth/eval
 
 ### Future ideas:
 * Get rid of flask-restful
@@ -29,6 +29,7 @@ and the intent to create an structure which can potentially support a large code
 * Implement two-factor registration via email
 * Support form-data in addition to json
 * Set up proper pagination
+* Integrate [marshmallow](https://marshmallow.readthedocs.io/en/stable/)
 
 
 ## Sample .env

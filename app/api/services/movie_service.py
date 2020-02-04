@@ -10,10 +10,7 @@ from app.common.responses import IkiruJsonResponse, Status
 
 def create_movie(parser):
     args = parser.parse_args()
-    try:
-        args['release_date'] = datetime.datetime(year=args['release_date'], month=1, day=1)
-    except:
-        return IkiruJsonResponse(None, 'Invalid release_year format.', 401)
+    args['release_date'] = datetime.datetime(year=args['release_date'], month=1, day=1)
 
     movie = Movie(**args)
     db.session.add(movie)

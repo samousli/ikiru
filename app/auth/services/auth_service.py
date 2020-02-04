@@ -44,7 +44,6 @@ def protected(auth_method=None, self_only=False):
         def wrapper(*args, **kwargs):
             nonlocal f
 
-            print('protected: ', f.__name__, args, kwargs)
             # called in reverse order, self_only after auth steps
             if self_only:
                 f = __self_only(f)
@@ -96,10 +95,14 @@ def __self_only(func):
         if not uuid:
             json = request.get_json()
             uuid = json and json.get(USER_UUID_FIELD_NAME, None)
-        if not uuid and request.data:
-            raise ValueError('Data to be parsed exists.')
 
-        if g.user.uuid != uuid:
+        if uuid and uuid == 'me':
+            return func(*args, **kwargs)
+
+        # if not uuid and request.data:
+        #     raise ValueError('Data to be parsed exists.')
+
+        if uuid and g.user.uuid != uuid:
             abort(403)
         return func(*args, **kwargs)
     return wrapper

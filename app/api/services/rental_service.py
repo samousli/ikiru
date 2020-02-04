@@ -4,8 +4,8 @@ from datetime import datetime
 from flask import g, current_app
 from sqlalchemy.exc import SQLAlchemyError
 
-from app import IkiruJsonResponse
 from app.models import db, Movie, Rental
+from app.common.responses import IkiruJsonResponse, Status
 
 # resolution loss is negligible
 SECONDS_TO_DAYS = 1 / (24*60*60)
@@ -23,7 +23,7 @@ def rent_movie(parser):
     db.session.commit()
     db.session.refresh(rental)
     return IkiruJsonResponse(
-        payload={'date_rented': rental.date_rented},
+        payload=rental,
         message=f'Movie `{movie.title}` rented successfully.'
     )
 
@@ -51,6 +51,12 @@ def calculate_cost(date_rented):
     return _tiered_cost(days_past, costs, tiers)
 
 
+def formatted_cost(rental_date):
+    cost = calculate_cost(rental_date)
+    currency_symbol = current_app.config['PAYMENT_CURRENCY'][2]
+    return f'{currency_symbol}{cost:.2f}'
+
+
 def return_rental(parser):
     # This shouldn't happen
     if not g.user:
@@ -62,23 +68,21 @@ def return_rental(parser):
     if not rental or rental.user.uuid != g.user.uuid:
         return IkiruJsonResponse(message='Invalid rental identifier.', status_code=404)
 
+    if rental.was_returned():
+        return IkiruJsonResponse(message='Rental already returned.', status_code=Status.UNPROCESSABLE_ENTITY)
+
     # Faulty logic but should work as a proof of concept
-    cost = calculate_cost(rental.date_rented)
     try:
         rental.date_returned = datetime.utcnow()
         db.session.commit()
     except SQLAlchemyError as e:
         return IkiruJsonResponse(message=e._message(), status_code=500)
 
-    currency_symbol = current_app.config['PAYMENT_CURRENCY'][2]
-    return IkiruJsonResponse({"cost": f'{currency_symbol} {cost}'}, 'Rental returned successfully.')
+    return IkiruJsonResponse({"cost": formatted_cost(rental.date_rented)}, 'Rental returned successfully.')
 
 
 def get_cost(rental_uuid):
     rental = Rental.get_by_uuid(rental_uuid)
     if not rental or rental.user.uuid != g.user.uuid:
         return IkiruJsonResponse(message='Invalid rental identifier.', status_code=404)
-
-    cost = calculate_cost(rental.date_rented)
-    currency_symbol = current_app.config['PAYMENT_CURRENCY'][2]
-    return IkiruJsonResponse({"cost": f'{currency_symbol} {cost}'})
+    return IkiruJsonResponse({"cost": formatted_cost(rental.date_rented)})
