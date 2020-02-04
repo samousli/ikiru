@@ -1,0 +1,676 @@
+{
+	"info": {
+		"_postman_id": "75ab9c81-0588-464f-864a-b7e7b4062225",
+		"name": "Ikiru",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/index",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"index"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "bigsecret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Sah",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/eval",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e8b5b7f4-4943-4704-8e67-f3799fb6a9f7",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1ODA2OTgxNDcsIm5iZiI6MTU4MDY5ODE0NywianRpIjoiOTg0NzBiNmItNjVhZS00MWQwLWFlOWUtMGY1OTQxNGQ5ZWI4IiwiZXhwIjoxNTgwNjk5MDQ3LCJpZGVudGl0eSI6MjEsImZyZXNoIjpmYWxzZSwidHlwZSI6ImFjY2VzcyJ9.LJrAGJeqjEjKwPUtxxgWX1uRAFEjaLZmpqM6Yh_BL1w",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/auth/eval",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"eval"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/users",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0919a889-3c37-4bef-8e85-d5e80fc6cce3",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"Sah2133\",\n\t\"password\": \"bigsecret\",\n\t\"email\": \"sahin.mousli@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/users/<uuid>",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4d53b73b-a269-495a-8553-22c62e25cd7a",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/v1/users/me",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/users/<uuid>/rentals",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b1bdcded-94c4-45ce-8e90-64e1fe18c375",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/v1/users/me/rentals",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"me",
+						"rentals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/movies",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dfec772b-2747-47eb-988f-37cef52c7069",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/movies",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/movies/<uuid>",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "213429f1-7de9-4923-8b2f-2441d1cd366f",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/movies/39004608b9594c87a48541574cb5e68d",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"movies",
+						"39004608b9594c87a48541574cb5e68d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/genres",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7ac3976b-a6dd-4f58-b9e8-357450f7cf2b",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/genres",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"genres"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/genres/<uuid>/movies",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2b9974af-8cf8-4fa8-8794-51663d370d8a",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							"",
+							"",
+							"pm.environment.set('genre_uuid', 'c5f598e822744074b88931508226052c')"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/genres/{{genre_uuid}}/movies",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"genres",
+						"{{genre_uuid}}",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/rentals",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "27b77bbe-b97f-482c-b206-36831f4e1bc9",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user_uuid\": \"me\",\n\t\"movie_uuid\": \"60ef2d4ebce24b7d827c9294bc7a4d2d\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/v1/rentals",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"rentals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/v1/returns",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2b9974af-8cf8-4fa8-8794-51663d370d8a",
+						"exec": [
+							"pm.sendRequest({",
+							"    \"url\": pm.environment.get('url') + \"/auth/token\",",
+							"    \"method\": \"POST\",",
+							"    \"timeout\": 0,",
+							"    \"header\": {",
+							"    \"Authorization\": \"Basic U2FoOmJpZ3NlY3JldA==\"",
+							"}}, function (err, res, any) {",
+							"",
+							"    if (err) {",
+							"        console.log(err);",
+							"    } else {",
+							"        pm.environment.set('jwt_token', res.json().data.token)",
+							"    }",
+							"})",
+							"",
+							"",
+							"pm.environment.set('genre_uuid', 'c5f598e822744074b88931508226052c')"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/v1/genres/{{genre_uuid}}/movies",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"genres",
+						"{{genre_uuid}}",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
