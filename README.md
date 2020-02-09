@@ -24,7 +24,6 @@ and the intent to create an structure which can potentially support a large code
 * Get rid of flask-restful
 * Add logger
 * Log accesses/exceptions to DB (deferred)
-* Set up dynamic config using DB (2 tier config: low-level and dynamic)
 * Add dynamic descriptions to /index via docstrings
 * Add dynamic role/permission system
 * Increase test coverage and automate the process
@@ -32,6 +31,7 @@ and the intent to create an structure which can potentially support a large code
 * Support form-data in addition to json
 * Set up proper pagination
 * Integrate [marshmallow](https://marshmallow.readthedocs.io/en/stable/)
+
 
 ## Sample .env
 ```shell script

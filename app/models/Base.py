@@ -22,7 +22,7 @@ class Base(db.Model, JSONEncoder):
         return inflect_engine.plural(base)
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(db.String(128), index=True, default=lambda: uuid4().hex)
+    uuid = db.Column(db.String(128), index=True, default=lambda: uuid4().hex, unique=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_modified = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -55,7 +55,7 @@ def protected(auth_method=None, self_only=False):
             elif auth_method is AuthType.Simple:
                 f = httpauth.login_required(f)
             return f(*args, **kwargs)
-        
+
         return wrapper
 
     if argless_call:
