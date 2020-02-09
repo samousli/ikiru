@@ -4,14 +4,16 @@ import urllib
 from flask import Flask, g, url_for, current_app
 
 from config import config
+from app.common.loggers import setup_loggers
 from app.common.responses import IkiruJsonResponse
-from app.common.extensions import register_extensions
 from app.common.error_handlers import register_error_handlers
+from app.common.extensions import register_db, setup_db_config, register_extensions
 
 
 def create_app(config_name=None):
-	if not config_name:
-		config_name = os.getenv('FLASK_CONFIG') or 'default'
+	config_name = config_name or os.getenv('FLASK_CONFIG') or 'default'
+	conf_class = config[config_name]
+	setup_loggers(conf_class)
 
 	app = Flask(__name__)
 
@@ -20,8 +22,10 @@ def create_app(config_name=None):
 	app.url_map._rules_by_endpoint.clear()
 
 	# load config
-	app.config.from_object(config[config_name])
+	app.config.from_object(conf_class)
 
+	register_db(app)
+	setup_db_config(app, config_name)
 	register_extensions(app)
 	register_blueprints(app)
 	register_error_handlers(app)
@@ -55,4 +59,3 @@ def site_index():
 			# ToDo: Dynamically insert docstrings from the endpoints
 			output.append(f'{method} {url}')  # = repr(rule)
 	return IkiruJsonResponse(sorted(output))
-

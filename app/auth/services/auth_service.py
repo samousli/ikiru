@@ -54,10 +54,10 @@ def protected(auth_method=None, self_only=False):
                 f = jwt_required(f)
             elif auth_method is AuthType.Simple:
                 f = httpauth.login_required(f)
-
             return f(*args, **kwargs)
-
+        
         return wrapper
+
     if argless_call:
         return decorator(func)
     return decorator

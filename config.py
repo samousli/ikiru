@@ -1,9 +1,15 @@
 import os
-from app.common.encoders import ExtendedJSONEncoder
+import inspect
+# from app.common.encoders import ExtendedJSONEncoder
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
+	@classmethod
+	def as_dict(cls):
+		attrs = inspect.getmembers(cls, lambda m: not inspect.isroutine(m))
+		return {m[0]: m[1] for m in attrs if not m[0].startswith('_')}
+
 	# Disables the event system which tracks db commits
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
 

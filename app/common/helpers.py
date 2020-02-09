@@ -10,5 +10,3 @@ def is_valid_email(candidate):
     Courtesy of: https://emailregex.com/
     """
     return EMAIL_RFC5322.match(candidate)
-
-

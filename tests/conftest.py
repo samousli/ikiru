@@ -1,12 +1,15 @@
 import sys
 
 import pytest
+from sqlalchemy.orm import sessionmaker
 from flask_jwt_extended import create_access_token
 
 from app import create_app
 from app.models import User
 from .populate_db import populate_movie_table, populate_user_table
 from collections import namedtuple
+
+Session = sessionmaker()
 UserJWTHeader = namedtuple('UserJWTHeader', 'header user')
 
 
@@ -33,29 +36,34 @@ def db(app):
     _db = app.extensions['sqlalchemy'].db
     print(f'\n---- POPULATING DB: {_db.engine!r}\n')
 
+    _db.drop_all()
     _db.create_all()
     populate_user_table(app)
     populate_movie_table(app)
     _db.session.commit()
-
-    yield _db
-
-    print('\n----- DROPPING DB\n')
-    _db.drop_all()
+    try:
+        yield _db
+    finally:
+        print('\n----- DROPPING DB\n')
+        _db.drop_all()
 
 
 @pytest.fixture(scope='session')
 def client(app):
-    yield app.test_client()
+    with app.test_client() as c:
+        yield c
 
 
 @pytest.fixture(scope='function')
-def session(request, db):
-    session = db['session_factory']()
+def session(db):
     print('\n----- CREATE DB SESSION\n')
+    connection = db.engine.connect()
+    transaction = connection.begin()
+    session = Session(bind=connection)
     yield session
-    session.rollback()
     session.close()
+    transaction.rollback()
+    connection.close()
     print('\n----- ROLLBACK DB SESSION\n')
 
 
