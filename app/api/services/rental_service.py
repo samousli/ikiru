@@ -29,16 +29,16 @@ def rent_movie(parser):
 
 
 def _tiered_cost(days_past, costs, tiers):
-    # total_cost, current_tier, days_so_far
-    tc, ct, dsf = .0, 0, 0
+    total_cost, current_tier, days_so_far = .0, 0, 0
+    # ToDo: Perhaps assert config constraints during init/update of config
     assert len(costs) == len(tiers) + 1
-    while dsf < days_past and ct < len(tiers):
-        d = min(days_past, tiers[ct]) - dsf
-        tc += costs[ct] * d
-        dsf += d
-        ct += 1
-    tc += max(0, days_past - dsf) * costs[ct]
-    return tc
+    while days_so_far < days_past and current_tier < len(tiers):
+        days_in_current_tier = min(days_past, tiers[current_tier]) - days_so_far
+        total_cost += costs[current_tier] * days_in_current_tier
+        days_so_far += days_in_current_tier
+        current_tier += 1
+    total_cost += max(0, days_past - days_so_far) * costs[current_tier]
+    return total_cost
 
 
 def calculate_cost(date_rented):
