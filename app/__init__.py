@@ -54,7 +54,7 @@ def site_index():
 		for arg in rule.arguments:
 			options[arg] = "[{0}]".format(arg)
 
-		url = urllib.parse.unquote(url_for(rule.endpoint, **options))
+		url = rule.rule  # urllib.parse.unquote(url_for(rule.endpoint, **options))
 		for method in rule.methods:
 			# ToDo: Dynamically insert docstrings from the endpoints
 			output.append(f'{method} {url}')  # = repr(rule)
